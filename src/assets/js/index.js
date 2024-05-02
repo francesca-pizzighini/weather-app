@@ -69,13 +69,11 @@ let humidity = document.getElementById("humidity");
 let wind = document.getElementById("wind");
 let weatherIcon = document.getElementById("weather-icon");
 
-// let API_KEY = "21f0616ee2103b557ec8f9a16f40e781";
-const API_KEY = process.env.API_KEY;
+let API_KEY = "21f0616ee2103b557ec8f9a16f40e781";
+// const API_KEY = process.env.API_KEY;
 
-console.log(cityNameInput);
 const weatherApi = async (cityNameInput) => {
   try {
-    console.log(cityNameInput);
     let response = await axios.get(
       `https://api.openweathermap.org/data/2.5/forecast?q=${cityNameInput}&units=metric&appid=${API_KEY}`
     );
