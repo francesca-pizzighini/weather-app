@@ -1,6 +1,7 @@
 import "../scss/style.scss";
 import axios from "axios";
 import * as bootstrap from "bootstrap";
+import appendFavicon from "./appendFavicon";
 
 import searchIconPng from "../../img/search.png";
 import humidityIconPng from "../../img/humidity.png";
@@ -12,6 +13,8 @@ import mistIcon from "../../img/mist.png";
 import rainIcon from "../../img/rain.png";
 import snowIcon from "../../img/snow.png";
 
+document.head.appendChild(appendFavicon(clearIcon));
+
 let searchIcon = document.getElementById("search-icon");
 let humidityIcon = document.getElementById("humidity-icon");
 let windIcon = document.getElementById("wind-icon");
@@ -22,7 +25,6 @@ windIcon.src = windIconPng;
 let cityNameInput = "london";
 function saveCityName() {
   cityNameInput = document.getElementById("search-value").value;
-  console.log(cityNameInput);
   return cityNameInput;
 }
 

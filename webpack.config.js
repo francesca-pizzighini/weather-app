@@ -1,6 +1,8 @@
 const path = require("path");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
+const loader = require("sass-loader");
+const { lowerCase } = require("lodash");
 
 module.exports = {
   entry: {
