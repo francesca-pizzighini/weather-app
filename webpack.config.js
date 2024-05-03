@@ -38,7 +38,9 @@ module.exports = {
   },
 
   plugins: [
-    new Dotenv(),
+    new Dotenv({
+      systemvars: true,
+    }),
     new htmlWebpackPlugin({
       title: "Weather app",
       minimize: false,
