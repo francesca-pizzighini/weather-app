@@ -69,8 +69,8 @@ let humidity = document.getElementById("humidity");
 let wind = document.getElementById("wind");
 let weatherIcon = document.getElementById("weather-icon");
 
-// let API_KEY = "21f0616ee2103b557ec8f9a16f40e781";
-const API_KEY = process.env.API_KEY;
+let API_KEY = "21f0616ee2103b557ec8f9a16f40e781";
+// const API_KEY = process.env.API_KEY;
 
 const weatherApi = async (cityNameInput) => {
   try {
