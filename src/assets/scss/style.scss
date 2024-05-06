@@ -193,13 +193,13 @@ body {
         margin-bottom: 80px;
 
         .container {
-            flex-direction: row;
+            flex-direction: column;
             justify-content: center;
             align-items: space-around;
 
             .card {
                 margin-bottom: 20px;
-                margin-right: 20px;
+                margin: 0 auto 20px;
 
                 .weather {
                     .details {

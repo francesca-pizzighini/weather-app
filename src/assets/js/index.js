@@ -28,38 +28,41 @@ function saveCityName() {
   return cityNameInput;
 }
 
-function setNextForecast(id, hourToSum, listIndex, date, apidata) {
-  let liElement = document.getElementById(id);
-
-  let dateToDisplay = new Date(date.getTime() + 1000 * 60 * 60 * hourToSum);
-
-  let emoji = "";
-  function setEmoji() {
-    if (apidata.list[listIndex].weather[0].main === "Clouds") {
-      emoji = "☁️";
-    } else if (apidata.list[listIndex].weather[0].main === "Clear") {
-      emoji = "☀️";
-    } else if (apidata.list[listIndex].weather[0].main === "Rain") {
-      emoji = "🌧️";
-    } else if (apidata.list[listIndex].weather[0].main === "Drizzle") {
-      emoji = "🌦️";
-    } else if (apidata.list[listIndex].weather[0].main === "Mist") {
-      emoji = "🌫️";
-    } else if (apidata.list[listIndex].weather[0].main === "Snow") {
-      emoji = "❄️";
-    } else {
-      emoji = "🌦️";
-    }
+function setImage(element, data) {
+  if (data.list[0].weather[0].main === "Clouds") {
+    element.src = cloudsIcon;
+  } else if (data.list[0].weather[0].main === "Clear") {
+    element.src = clearIcon;
+  } else if (data.list[0].weather[0].main === "Rain") {
+    element.src = rainIcon;
+  } else if (data.list[0].weather[0].main === "Drizzle") {
+    element.src = drizzleIcon;
+  } else if (data.list[0].weather[0].main === "Mist") {
+    element.src = mistIcon;
+  } else if (data.list[0].weather[0].main === "Snow") {
+    element.src = snowIcon;
+  } else {
+    element.src = drizzleIcon;
   }
-  setEmoji();
-
-  liElement.innerHTML = `${dateToDisplay.toLocaleDateString("en-US", {
-    weekday: "short",
-  })} ${dateToDisplay.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-  })} - ${Math.round(apidata.list[listIndex].main.temp)}°C ${
-    apidata.list[listIndex].weather[0].main
-  } ${emoji}`;
+}
+function setEmoji(data) {
+  let emoji = "";
+  if (data.weather[0].main === "Clouds") {
+    emoji = "☁️";
+  } else if (data.weather[0].main === "Clear") {
+    emoji = "☀️";
+  } else if (data.weather[0].main === "Rain") {
+    emoji = "🌧️";
+  } else if (data.weather[0].main === "Drizzle") {
+    emoji = "🌦️";
+  } else if (data.weather[0].main === "Mist") {
+    emoji = "🌫️";
+  } else if (data.weather[0].main === "Snow") {
+    emoji = "❄️";
+  } else {
+    emoji = "🌦️";
+  }
+  return emoji;
 }
 
 let error = document.getElementById("error");
@@ -68,8 +71,8 @@ let cityName = document.getElementById("city");
 let humidity = document.getElementById("humidity");
 let wind = document.getElementById("wind");
 let weatherIcon = document.getElementById("weather-icon");
+let listOfWeather = document.getElementById("list-of-next-forecast");
 
-// let API_KEY = "21f0616ee2103b557ec8f9a16f40e781";
 const API_KEY = process.env.API_KEY;
 
 const weatherApi = async (cityNameInput) => {
@@ -82,36 +85,35 @@ const weatherApi = async (cityNameInput) => {
 
     error.style.display = "none";
 
+    while (listOfWeather.hasChildNodes()) {
+      listOfWeather.removeChild(listOfWeather.firstChild);
+    }
+
     temperature.innerHTML = `${Math.round(data.list[0].main.temp)}°C`;
     cityName.innerHTML = `${data.city.name}`;
     humidity.innerHTML = `${data.list[0].main.humidity}%`;
     wind.innerHTML = `${data.list[0].wind.speed} km/h`;
 
-    if (data.list[0].weather[0].main === "Clouds") {
-      weatherIcon.src = cloudsIcon;
-    } else if (data.list[0].weather[0].main === "Clear") {
-      weatherIcon.src = clearIcon;
-    } else if (data.list[0].weather[0].main === "Rain") {
-      weatherIcon.src = rainIcon;
-    } else if (data.list[0].weather[0].main === "Drizzle") {
-      weatherIcon.src = drizzleIcon;
-    } else if (data.list[0].weather[0].main === "Mist") {
-      weatherIcon.src = mistIcon;
-    } else if (data.list[0].weather[0].main === "Snow") {
-      weatherIcon.src = snowIcon;
-    } else {
-      weatherIcon.src = drizzleIcon;
-    }
+    setImage(weatherIcon, data);
 
-    let date = new Date();
+    data.list.map((weather) => {
+      let li = document.createElement("li");
+      const date = new Date(weather.dt_txt);
+      let formattedDate = `${date.toLocaleDateString("en-US", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      })} - ${date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+      })}`;
+      let temp = `${Math.round(weather.main.temp)}°C`;
 
-    setNextForecast("3-hr-forecast", 3, 1, date, data);
-    setNextForecast("6-hr-forecast", 6, 2, date, data);
-    setNextForecast("12-hr-forecast", 12, 4, date, data);
-    setNextForecast("1-d-forecast", 24, 8, date, data);
-    setNextForecast("2-d-forecast", 48, 16, date, data);
-    setNextForecast("3-d-forecast", 72, 24, date, data);
-    setNextForecast("4-d-forecast", 96, 32, date, data);
+      let weatherEmoji = setEmoji(weather);
+
+      let innerHTML = `${formattedDate} - ${temp} ${weatherEmoji}`;
+      li.innerHTML = innerHTML;
+      listOfWeather.appendChild(li);
+    });
 
     document.getElementById("search-value").value = "";
   } catch (err) {
